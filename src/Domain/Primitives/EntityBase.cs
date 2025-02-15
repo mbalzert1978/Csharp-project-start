@@ -2,10 +2,8 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Domain.Primitives;
 
-public abstract class EntityBase<TId>(TId id)
-    : IEqualityComparer<EntityBase<TId>>,
-        IEquatable<EntityBase<TId>>
-    where TId : notnull
+public abstract class EntityBase<TId>(TId id) : IEquatable<EntityBase<TId>>
+    where TId : notnull, IEquatable<TId>
 {
     public TId Id { get; } = id;
 
@@ -19,18 +17,9 @@ public abstract class EntityBase<TId>(TId id)
         return !(left == right);
     }
 
-    public bool Equals(EntityBase<TId>? other) => other?.Equals(this) ?? false;
+    public override bool Equals(object? obj) => obj?.Equals(this) ?? false;
 
-    public bool Equals(EntityBase<TId>? x, EntityBase<TId>? y) => x?.Equals(y) ?? false;
+    public bool Equals(EntityBase<TId>? other) => other?.Id.Equals(Id) ?? false;
 
-    public sealed override bool Equals(object? obj) =>
-        obj is EntityBase<TId> entity && entity.Id.Equals(Id);
-
-    public sealed override int GetHashCode() => Id.GetHashCode();
-
-    public int GetHashCode([DisallowNull] EntityBase<TId> obj)
-    {
-        ArgumentNullException.ThrowIfNull(obj);
-        return obj.GetHashCode();
-    }
+    public override int GetHashCode() => Id.GetHashCode();
 }
