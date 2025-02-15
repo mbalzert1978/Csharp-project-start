@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Domain.Primitives;
 
+
 public abstract class EntityBase<TId>(TId id) : IEquatable<EntityBase<TId>>
     where TId : notnull, IEquatable<TId>
 {
@@ -22,4 +23,5 @@ public abstract class EntityBase<TId>(TId id) : IEquatable<EntityBase<TId>>
     public bool Equals(EntityBase<TId>? other) => other?.Id.Equals(Id) ?? false;
 
     public override int GetHashCode() => Id.GetHashCode();
+
 }
