@@ -2,12 +2,21 @@ using Domain.Primitives;
 
 namespace Domain.UnitTests.Primitives;
 
-public class EntityTests
+public partial class EntityTests
 {
     [Fact]
-    public void EntityWhenComparedToAnotherEntityShouldReturnFalseWhenTheyAreNotTheSameType()
+    public void EntityWhenComparedToAnotherEntityShouldReturnTrueWhenTheyHaveTheSameId()
     {
-        (FakeEntityA a, FakeEntityB b) = Setup();
+        (FakeEntity a, FakeEntity b, _) = FetchEntities(Guid.NewGuid());
+
+        Assert.True(a == b);
+        Assert.False(a != b);
+    }
+
+    [Fact]
+    public void EntityWhenComparedToAnotherEntityShouldReturnFalseWhenTheyHaveNotTheSameId()
+    {
+        (FakeEntity a, FakeEntity b, _) = FetchEntities();
 
         Assert.False(a == b);
         Assert.True(a != b);
@@ -16,27 +25,8 @@ public class EntityTests
     [Fact]
     public void EntitiesOfDifferentTypesWhenComparedUsingEqualsMethodReturnFalse()
     {
-        (FakeEntityA a, FakeEntityB b) = Setup();
+        (FakeEntity a, _, IntFakeEntity c) = FetchEntities();
 
-        Assert.False(a.Equals(b));
-    }
-
-    [Fact]
-    public void EntitiesOfDifferentTypesWhenComparedUsingObjectReferenceEqualsReturnFalse()
-    {
-        (FakeEntityA a, FakeEntityB b) = Setup();
-
-        Assert.False(ReferenceEquals(a, b));
-    }
-
-    private sealed class FakeEntityA(Guid id) : EntityBase<Guid>(id) { }
-
-    private sealed class FakeEntityB(Guid id) : EntityBase<Guid>(id) { }
-
-    private static (FakeEntityA, FakeEntityB) Setup()
-    {
-        FakeEntityA a = new(Guid.NewGuid());
-        FakeEntityB b = new(Guid.NewGuid());
-        return (a, b);
+        Assert.False(a.Equals(c));
     }
 }
