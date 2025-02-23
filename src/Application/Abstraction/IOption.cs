@@ -4,6 +4,7 @@ using Application.Common.OptionType;
 namespace Application.Abstraction;
 
 public interface IOption<T>
+    where T : notnull
 {
     [SuppressMessage(
         "Naming",
@@ -17,6 +18,8 @@ public interface IOption<T>
     )]
     T UnwrapOr(T @default);
     T? UnwrapOrNull();
-    IOption<TBound> Bind<TBound>(Func<T, IOption<TBound>> op);
-    IOption<TOut> Map<TOut>(Func<T, TOut> op);
+    IOption<U> Bind<U>(Func<T, IOption<U>> op)
+        where U : notnull;
+    IOption<U> Map<U>(Func<T, U> op)
+        where U : notnull;
 }

@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Application.Abstraction;
+using Application.Guards;
 using static Application.Common.OptionType.Factories;
 
 namespace Application.Common.OptionType;
@@ -13,6 +14,7 @@ namespace Application.Common.OptionType;
     Justification = "Option is a common name for this type of monad."
 )]
 public readonly record struct Option<T> : IOption<T>
+    where T : notnull
 {
     private readonly T _content;
     private readonly bool _hasValue;
@@ -22,19 +24,28 @@ public readonly record struct Option<T> : IOption<T>
         (_content, _hasValue) = (content, hasValue);
     }
 
-    public IOption<TBound> Bind<TBound>(Func<T, IOption<TBound>> op)
-    {
-        ArgumentNullException.ThrowIfNull(op);
-        return _hasValue ? op(_content) : None<TBound>();
-    }
+    public IOption<U> Bind<U>(Func<T, IOption<U>> op)
+        where U : notnull =>
+        this switch
+        {
+            { _hasValue: true, _content: var content } => Ensure.NotNull(op)(content),
+            { _hasValue: false } => None<U>(),
+        };
 
-    public IOption<TOut> Map<TOut>(Func<T, TOut> op)
-    {
-        ArgumentNullException.ThrowIfNull(op);
-        return _hasValue ? Some(op(_content)) : None<TOut>();
-    }
+    public IOption<U> Map<U>(Func<T, U> op)
+        where U : notnull =>
+        this switch
+        {
+            { _hasValue: true, _content: var content } => Some(Ensure.NotNull(op)(content)),
+            { _hasValue: false } => None<U>(),
+        };
 
-    public T UnwrapOr(T @default) => _hasValue ? _content : @default;
+    public T UnwrapOr(T @default) =>
+        this switch
+        {
+            { _hasValue: true, _content: var content } => content,
+            { _hasValue: false } => @default,
+        };
 
     public T? UnwrapOrNull() => _content;
 }
