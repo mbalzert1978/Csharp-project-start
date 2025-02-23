@@ -23,8 +23,8 @@ public class ErrorTests
     public void ErrorWithEmptyCodeAndNullDescriptionIsCreatedCorrectly()
     {
         // Arrange
-        string code = string.Empty;
-        string? description = null;
+        const string code = "";
+        const string? description = null;
 
         // Act
         ErrorType error = new(code, description);
