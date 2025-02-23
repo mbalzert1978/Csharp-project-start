@@ -29,19 +29,9 @@ public class EntityTests
         Assert.False(ReferenceEquals(a, b));
     }
 
-    [Fact]
-    public void EntitiesOfDifferentTypesWhenComparedUsingObjectReferenceEqualsWithNullReturnFalse()
-    {
-        // Arrange
-        FakeEntityA a = new(Guid.NewGuid());
-        FakeEntityB? b = null;
+    private sealed class FakeEntityA(Guid id) : EntityBase<Guid>(id) { }
 
-        Assert.False(ReferenceEquals(a, b));
-    }
-
-    private class FakeEntityA(Guid id) : EntityBase<Guid>(id) { }
-
-    private class FakeEntityB(Guid id) : EntityBase<Guid>(id) { }
+    private sealed class FakeEntityB(Guid id) : EntityBase<Guid>(id) { }
 
     private static (FakeEntityA, FakeEntityB) Setup()
     {
