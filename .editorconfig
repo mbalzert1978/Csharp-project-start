@@ -39,6 +39,11 @@ csharp_space_around_binary_operators = before_and_after
 dotnet_diagnostic.API1000.severity = error
 dotnet_diagnostic.API1001.severity = error
 dotnet_diagnostic.API1002.severity = suggestion
+dotnet_diagnostic.IDE0072.severity = none
+dotnet_diagnostic.CS8510.severity = error
+dotnet_diagnostic.CA1715.severity = none
+
+
 
 # disallow async void
 dotnet_diagnostic.S3168.severity = error
