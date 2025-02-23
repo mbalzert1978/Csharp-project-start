@@ -15,6 +15,20 @@
         "dotnet-csharpier"
       ],
       "rollForward": false
+    },
+    "roslynator.dotnet.cli": {
+      "version": "0.10.1",
+      "commands": [
+        "roslynator"
+      ],
+      "rollForward": false
+    },
+    "dotnet-outdated-tool": {
+      "version": "4.6.7",
+      "commands": [
+        "dotnet-outdated"
+      ],
+      "rollForward": false
     }
   }
 }
