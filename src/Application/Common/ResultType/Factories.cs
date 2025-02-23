@@ -5,7 +5,11 @@ namespace Application.Common.ResultType;
 
 public static class Factories
 {
-    public static IResult<T, TError> Ok<T, TError>(T content) => new Result<T, TError>(content);
+    public static IResult<T, E> Ok<T, E>(T content)
+        where T : notnull
+        where E : notnull => new Result<T, E>(content);
 
-    public static IResult<T, TError> Err<T, TError>(TError error) => new Result<T, TError>(error);
+    public static IResult<T, E> Err<T, E>(E error)
+        where T : notnull
+        where E : notnull => new Result<T, E>(error);
 }
