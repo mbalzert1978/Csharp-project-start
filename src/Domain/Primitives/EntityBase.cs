@@ -9,7 +9,7 @@ public abstract class EntityBase<TId>(TId id) : IEquatable<EntityBase<TId>>
 
     public static bool operator ==(EntityBase<TId>? left, EntityBase<TId>? right)
     {
-        return left?.Equals(right) ?? false;
+        return Equals(left, right);
     }
 
     public static bool operator !=(EntityBase<TId>? left, EntityBase<TId>? right)
@@ -17,9 +17,9 @@ public abstract class EntityBase<TId>(TId id) : IEquatable<EntityBase<TId>>
         return !(left == right);
     }
 
-    public override bool Equals(object? obj) => obj?.Equals(this) ?? false;
+    public override bool Equals(object? obj) => Equals(obj as EntityBase<TId>);
 
-    public bool Equals(EntityBase<TId>? other) => other?.Id.Equals(Id) ?? false;
+    public bool Equals(EntityBase<TId>? other) => other is not null && Id.Equals(other.Id);
 
-    public override int GetHashCode() => Id.GetHashCode();
+    public override int GetHashCode() => HashCode.Combine(42, Id);
 }
