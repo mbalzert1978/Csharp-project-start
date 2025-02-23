@@ -2,80 +2,60 @@ using Domain.Primitives;
 
 namespace Domain.UnitTests.Primitives;
 
-public class ErrorTests
+public partial class ErrorTests
 {
     [Fact]
     public void ErrorWithEmptyCodeAndNonEmptyDescriptionIsCreatedCorrectly()
     {
-        // Arrange
-        string code = string.Empty;
-        const string description = "Test Description";
-
         // Act
-        ErrorType error = new(code, description);
+        ErrorType error = new(EMPTY, DESCRIPTION);
 
         // Assert
-        Assert.Equal(code, error.Code);
-        Assert.Equal(description, error.Description);
+        Assert.Equal(EMPTY, error.Code);
+        Assert.Equal(DESCRIPTION, error.Description);
     }
 
     [Fact]
     public void ErrorWithEmptyCodeAndNullDescriptionIsCreatedCorrectly()
     {
-        // Arrange
-        string code = string.Empty;
-        string? description = null;
-
         // Act
-        ErrorType error = new(code, description);
+        ErrorType error = new(CODE, null);
 
         // Assert
-        Assert.Equal(code, error.Code);
+        Assert.Equal(CODE, error.Code);
         Assert.Null(error.Description);
     }
 
     [Fact]
     public void ErrorWithNonEmptyCodeAndNonEmptyDescriptionIsCreatedCorrectly()
     {
-        // Arrange
-        const string code = "Test Code";
-        const string description = "Test Description";
-
         // Act
-        ErrorType error = new(code, description);
+        ErrorType error = new(CODE, DESCRIPTION);
 
         // Assert
-        Assert.Equal(code, error.Code);
-        Assert.Equal(description, error.Description);
+        Assert.Equal(CODE, error.Code);
+        Assert.Equal(DESCRIPTION, error.Description);
     }
 
     [Fact]
     public void ErrorWithNonEmptyCodeAndNullDescriptionIsCreatedCorrectly()
     {
-        // Arrange
-        const string code = "Test Code";
-        string? description = null;
-
         // Act
-        ErrorType error = new(code, description);
+        ErrorType error = new(CODE, null);
 
         // Assert
-        Assert.Equal(code, error.Code);
+        Assert.Equal(CODE, error.Code);
         Assert.Null(error.Description);
     }
 
     [Fact]
     public void ErrorWithNoneHasEmptyCodeAndDescription()
     {
-        // Arrange
-        string expectedCode = string.Empty;
-        string expectedDescription = string.Empty;
-
         // Act
         ErrorType error = ErrorType.None;
 
         // Assert
-        Assert.Equal(expectedCode, error.Code);
-        Assert.Equal(expectedDescription, error.Description);
+        Assert.Equal("", error.Code);
+        Assert.Equal("", error.Description);
     }
 }

@@ -6,40 +6,53 @@ on:
   pull_request:
     branches: [ "main" ]
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+env:
+  DOTNET_VERSION: '9.0.x'
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_NOLOGO: true
+  BUILD_CONFIG: Release
 
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.x'
-
-    - name: Restore dependencies
-      run: dotnet restore
-
-    - name: Build
-      run: dotnet build --no-restore
-
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
-
-    - name: Install Roslynator
-      run: dotnet tool install --global Roslynator.DotNet.Cli
-
-    - name: Run Roslynator analysis
-      run: roslynator analyze
-
-    - name: Format
-      run: dotnet format --verify-no-changes
+        dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Cache NuGet packages
       uses: actions/cache@v4
       with:
         path: ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
         restore-keys: |
           ${{ runner.os }}-nuget-
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration ${{ env.BUILD_CONFIG }} --no-restore
+
+    - name: Restore tools
+      run: |
+        dotnet tool restore
+
+    - name: Code analysis
+      run: dotnet roslynator analyze
+
+    - name: Code formatting check
+      run: |
+        dotnet csharpier --check
+        dotnet format --verify-no-changes
+
+    - name: Run tests
+      run: dotnet test --configuration ${{ env.BUILD_CONFIG }} --no-build --verbosity normal 
